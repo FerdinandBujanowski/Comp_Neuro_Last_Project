@@ -1,0 +1,58 @@
+function M = RNN_SIMULATION(M)
+
+    for kt = M.syn_delay_Idx+1:M.n_t
+
+        % Presynaptic spikes -----
+        is_exc_AP_pre = M.is_AP(M.N_E,kt-M.syn_delay_Idx); % excitatory spikes arriving now and produced presynaptically syn_delay in the past
+        is_exc_AP_transmit = is_exc_AP_pre * M.ones_1_n; % transmission to postsynaptic neurons
+        is_inh_AP_pre = M.is_AP(M.N_I,kt-M.syn_delay_Idx); % inhibitory spikes arriving now and produced presynaptically syn_delay in the past
+        is_inh_AP_transmit = is_inh_AP_pre * M.ones_1_n; % transmission to postsynaptic neurons
+
+        % Currents -----
+
+        M.I_L(:,kt) = M.g_L * (M.V(:,kt-1) - M.V_L); % Leak current in each postsynaptic neuron
+
+        % Ampa update -------
+        p_Ampa_prev = M.p_Ampa(:,:,kt-1);
+        p_Ampa_next = p_Ampa_prev + M.dp_Ampa*is_exc_AP_transmit.*(1-p_Ampa_prev) - M.dt*p_Ampa_prev/M.tau_Ampa;
+        M.p_Ampa(:,:,kt) = p_Ampa_next;
+        M.p_Ampa_sum(:,kt) = sum(p_Ampa_next.*M.W_E,1);
+        M.I_Ampa(:,kt) = M.g_Ampa*M.p_Ampa_sum(:,kt).*(M.V(:,kt-1)-M.V_Ampa);
+
+        % Nmda update -------
+        p_Nmda_prev = M.p_Nmda(:,:,kt-1);
+        p_Nmda_next = p_Nmda_prev + M.dp_Nmda*is_exc_AP_transmit.*(1-p_Nmda_prev) - M.dt*p_Nmda_prev/M.tau_Nmda;
+        M.p_Nmda(:,:,kt) = p_Nmda_next;
+        M.p_Nmda_sum(:,kt) = sum(p_Nmda_next.*M.W_E,1);
+        M.x_Nmda = (1+M.Mg*exp(-0.062*M.V(:,kt-1))).^(-1);
+        M.I_Nmda(:,kt) = M.g_Nmda*M.x_Nmda.*M.p_Nmda_sum(:,kt).*(M.V(:,kt-1)-M.V_Nmda);
+
+        % GabaA update -------
+        p_GabaA_prev = M.p_GabaA(:,:,kt-1);
+        p_GabaA_next = p_GabaA_prev + M.dp_GabaA*is_inh_AP_transmit.*(1 -p_GabaA_prev) - M.dt*p_GabaA_prev/M.tau_GabaA;
+        M.p_GabaA(:,:,kt) = p_GabaA_next;
+        M.p_GabaA_sum(:,kt) = sum(p_GabaA_next.*M.W_I,1);
+        M.I_GabaA(:,kt) = M.g_GabaA*M.p_GabaA_sum(:,kt).*(M.V(:,kt-1)-M.V_GabaA);
+
+        % GabaB update -------
+        p_GabaB_prev = M.p_GabaB(:,:,kt-1);
+        p_GabaB_next = p_GabaB_prev + M.dp_GabaB*is_inh_AP_transmit.*(1 -p_GabaB_prev) - M.dt*p_GabaB_prev/M.tau_GabaB;
+        M.p_GabaB(:,:,kt) = p_GabaB_next;
+        M.p_GabaB_sum(:,kt) = sum(p_GabaB_next.*M.W_I,1);
+        M.I_GabaB(:,kt) = M.g_GabaB*M.p_GabaB_sum(:,kt).*(M.V(:,kt-1)-M.V_GabaB);
+
+        % Synaptic totals (updated to include Nmda & GabaB) -------
+        M.I_Syn(:,kt) = M.I_Ampa(:,kt) + M.I_Nmda(:,kt) + M.I_GabaA(:,kt) + M.I_GabaB(:,kt);
+        M.I_Total(:,kt) = M.I_L(:,kt) + M.I_Ampa(:,kt) + M.I_Nmda(:,kt) + M.I_GabaA(:,kt) + M.I_GabaB(:,kt) - M.I_FF;
+
+        % Voltage -----
+        M.V(:,kt) = M.V(:,kt-1) + M.dt * (-M.I_Total(:,kt)/M.C);
+        spiking_neurones = find(M.V(:,kt-1) > M.V_S);
+        M.V(spiking_neurones,kt) = M.V_R;
+        M.is_AP(spiking_neurones,kt) = 1;
+
+    end
+
+    M.V(M.V == M.V_R) = M.V_P;
+
+end
