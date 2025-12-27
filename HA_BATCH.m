@@ -1,0 +1,14 @@
+clear
+tic
+warning("off")
+
+M = [];
+M = RNN_PARAMETERS(M, 10, 10);
+M = RNN_INITIALIZATION(M);
+M = RNN_SIMULATION(M);
+M = RNN_ANALYSIS(M);
+M = RNN_GRAPHIC_PARAMETERS(M);
+M = RNN_GRAPHICS(M);
+M = RNN_DISPLAY(M);
+
+% disp("All done")

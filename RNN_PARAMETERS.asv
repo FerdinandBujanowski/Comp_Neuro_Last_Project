@@ -1,4 +1,4 @@
-function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler)
+function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA)
 
 % Time -------
 M.t_max = 1000; % max simulation time (ms)
@@ -54,8 +54,8 @@ M.V_0_std = 0;
 % External input -------
 M.I_FF_mean = 1.05; % µAcm-2
 M.I_FF_std = 0; % µAcm-2
-M.I_On = 2 * M.I_FF_mean; % µAcm-2
-M.I_Off = -2 * M.I_FF_mean; % µAcm-2
+M.I_On = 2 * M.I_FF;
+M.I_Off = -2 * M.I_FF;
 
 % Ampa channel receptors -------
 M.tau_Ampa = 3; % time constant (ms)
@@ -79,7 +79,3 @@ M.tau_GabaB = 150; % time constant (ms)
 M.dp_GabaB = 0.1; % increment (au)
 M.V_GabaB = -90; % reversal potential (mV)
 
-% Hebbian Assembly --------------
-M.n_HA = param_n_HA;
-M.w_HA = param_w_HA_scaler * M.w_mean;
-M.N_HA = 1:M.n_HA;
