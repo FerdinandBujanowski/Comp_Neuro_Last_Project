@@ -1,11 +1,16 @@
 function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler)
 
 % Time -------
-M.t_max = 1000; % max simulation time (ms)
+M.d_On = 100; % duration of ON stimulation (ms)
+M.d_Off = 100; % duration of OFF stimulation (ms)
+M.d_period = 500; % (ms)
+
+M.t_max = 3 * M.d_period + M.d_On + M.d_Off; % max simulation time (ms)
 M.dt = 0.25; % time step (ms)
 M.dt = 0.5; % time step (ms)
 M.T = (0:M.dt:M.t_max-M.dt); % time array (ms)
 M.n_t = length(M.T); % # of time steps
+
 
 % Network structure -------
 M.n = 500; % # of neurons
@@ -83,3 +88,4 @@ M.V_GabaB = -90; % reversal potential (mV)
 M.n_HA = param_n_HA;
 M.w_HA = param_w_HA_scaler * M.w_mean;
 M.N_HA = 1:M.n_HA;
+M.N_non_HA = M.n_HA+1:M.n;

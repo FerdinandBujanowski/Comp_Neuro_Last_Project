@@ -69,6 +69,12 @@ function M = RNN_INITIALIZATION(M)
 
     M.W_E = M.W(M.N_E,M.N);
     M.W_I = M.W(M.N_I,M.N);
+    
+    % initialize HA phasic current stimulations
+    flag_ON = and(M.T >= M.d_period, M.T < M.d_period + M.d_On);
+    M.I_On_T = flag_ON * M.I_On;
+    flag_OFF = and(M.T >= 2 * M.d_period + M.d_On, M.T < 2 * M.d_period + M.d_On + M.d_Off);
+    M.I_Off_T = flag_OFF * M.I_Off;
 
     % E/I balance -------
     

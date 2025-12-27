@@ -65,10 +65,14 @@ function M = RNN_INITIALIZATION(M)
     M.W(M.N_I,M.N_E) = M.w_IE_Scaling*M.W(M.N_I,M.N_E);
 
     % initialize HA weights
-    M.W(M.N_HA, M.N_HA) = M.W(M.N_HA, M.N_HA) - A
+    M.W(M.N_HA, M.N_HA) = M.W(M.N_HA, M.N_HA) + A(M.N_HA, M.N_HA) * (M.w_HA - M.w_mean);
 
     M.W_E = M.W(M.N_E,M.N);
     M.W_I = M.W(M.N_I,M.N);
+    
+    % initialize HA phasic current stimulations
+    flag_ON = and(M.T >= M.d_period, M.T < M.d_period + M.d_ON);
+    flag_OFF = and(M.T >= 2 * M.d_period + M.d_ON, M.T < 2 * M.d_period + M.d_ON + M.d_OFF);
 
     % E/I balance -------
     
