@@ -1,16 +1,15 @@
 function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler)
 
 % Time -------
-M.d_On = 100; % duration of ON stimulation (ms)
-M.d_Off = 100; % duration of OFF stimulation (ms)
-M.d_period = 500; % (ms)
+M.d_On = 50; % duration of ON stimulation (ms)
+M.d_Off = 50; % duration of OFF stimulation (ms)
+M.d_period = 200; % (ms)
 
 M.t_max = 3 * M.d_period + M.d_On + M.d_Off; % max simulation time (ms)
 M.dt = 0.25; % time step (ms)
 M.dt = 0.5; % time step (ms)
 M.T = (0:M.dt:M.t_max-M.dt); % time array (ms)
 M.n_t = length(M.T); % # of time steps
-
 
 % Network structure -------
 M.n = 500; % # of neurons

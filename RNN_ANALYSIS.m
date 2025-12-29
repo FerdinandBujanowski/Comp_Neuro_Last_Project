@@ -85,3 +85,33 @@ M.rho_synchr = sqrt(var(mean(M.f_est,1))/mean(var(M.f_est,1))); % synchrony base
 M.f_Cov_mean = mean(M.f_Cov);
 M.f_Cov_std = std(M.f_Cov);
 
+% Estimated HA / non-HA frequencies --------------------------------------
+M.spikes_Sp = zeros(M.n, 1);
+M.spikes_P = zeros(M.n, 1);
+M.spikes_Off = zeros(M.n, 1);
+
+start_Sp = (0.5*M.d_period);
+end_Sp = M.d_period;
+start_P = (M.d_On+1.5*M.d_period);
+end_P = (M.d_On+2*M.d_period);
+start_Off = (M.d_On+M.d_Off+2.5*M.d_period);
+end_Off = (M.d_On+M.d_Off+3*M.d_period);
+
+% disp(start_Sp + ", " + end_Sp)
+% disp(start_P + ", " + end_P)
+% disp(start_Off + ", " + end_Off)
+
+for k = 1:M.n
+    M.spikes_Sp(k) = sum(and(M.t_AP_display{k} >= start_Sp, M.t_AP_display{k} < end_Sp));
+    M.spikes_P(k) = sum(and(M.t_AP_display{k} >= start_P, M.t_AP_display{k} < end_P));
+    M.spikes_Off(k) = sum(and(M.t_AP_display{k} >= start_Off, M.t_AP_display{k} < end_Off));
+end
+
+% Possibility to add flags to account for silent neurons
+
+M.f_Sp_HA = mean(M.spikes_Sp(M.N_HA)/(0.5*M.d_period/1000));
+M.f_Sp_non_HA = mean(M.spikes_Sp(M.N_non_HA)/(0.5*M.d_period/1000));
+M.f_P_HA = mean(M.spikes_P(M.N_HA)/(0.5*M.d_period/1000));
+M.f_P_non_HA = mean(M.spikes_P(M.N_non_HA)/(0.5*M.d_period/1000));
+M.f_Off_HA = mean(M.spikes_Off(M.N_HA)/(0.5*M.d_period/1000));
+M.f_Off_non_HA = mean(M.spikes_Off(M.N_non_HA)/(0.5*M.d_period/1000));

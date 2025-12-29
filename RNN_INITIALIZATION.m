@@ -67,6 +67,9 @@ function M = RNN_INITIALIZATION(M)
     % initialize HA weights
     M.W(M.N_HA, M.N_HA) = M.W(M.N_HA, M.N_HA) + A(M.N_HA, M.N_HA) * (M.w_HA - M.w_mean);
 
+    % make HA weights symmetric
+    M.W(M.N_HA, M.N_HA) = max(M.W(M.N_HA, M.N_HA), M.W(M.N_HA, M.N_HA).');
+
     M.W_E = M.W(M.N_E,M.N);
     M.W_I = M.W(M.N_I,M.N);
     
