@@ -1,4 +1,4 @@
-function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler)
+function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler, symmetric_HA_weights)
 
 % Time -------
 M.d_On = 50; % duration of ON stimulation (ms)
@@ -22,6 +22,8 @@ M.N_E = 1:M.n_E; % vector of excitatory neuron's indices
 M.N_I = M.n_E+1:M.n; % vector of inhibitory neuron's indices
 M.Is_E = [ones(M.n_E,1); zeros(M.n_I,1)]; % who is excitatory
 M.Is_I = [zeros(M.n_E,1); ones(M.n_I,1)]; % who is inhibitory
+
+M.symmetric_HA_weights = symmetric_HA_weights;
 
 % Synaptic transmission -------
 M.syn_delay_ms = 1.5; % ms

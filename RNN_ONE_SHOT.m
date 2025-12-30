@@ -3,7 +3,7 @@ tic
 warning("off")
 
 M = [];
-M = RNN_PARAMETERS(M, 50, 2);
+M = RNN_PARAMETERS(M, 50, 0);
 M = RNN_INITIALIZATION(M);
 M = RNN_SIMULATION(M);
 M = RNN_ANALYSIS(M);

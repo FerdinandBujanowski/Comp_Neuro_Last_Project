@@ -101,17 +101,29 @@ end_Off = (M.d_On+M.d_Off+3*M.d_period);
 % disp(start_P + ", " + end_P)
 % disp(start_Off + ", " + end_Off)
 
+% indices of non-silent neurons during each phase
+i_Sp = ones(M.n) * -1;
+i_P = ones(M.n) * -1;
+i_Off = ones(M.n) * -1;
+
 for k = 1:M.n
     M.spikes_Sp(k) = sum(and(M.t_AP_display{k} >= start_Sp, M.t_AP_display{k} < end_Sp));
+    if M.spikes_Sp(k) > 0
+        i_Sp(k) = k;
+    end
     M.spikes_P(k) = sum(and(M.t_AP_display{k} >= start_P, M.t_AP_display{k} < end_P));
+    if M.spikes_P(k) > 0
+        i_P(k) = k;
+    end
     M.spikes_Off(k) = sum(and(M.t_AP_display{k} >= start_Off, M.t_AP_display{k} < end_Off));
+    if M.spikes_Off(k) > 0
+        i_Off(k) = k;
+    end
 end
 
-% Possibility to add flags to account for silent neurons
-
-M.f_Sp_HA = mean(M.spikes_Sp(M.N_HA)/(0.5*M.d_period/1000));
-M.f_Sp_non_HA = mean(M.spikes_Sp(M.N_non_HA)/(0.5*M.d_period/1000));
-M.f_P_HA = mean(M.spikes_P(M.N_HA)/(0.5*M.d_period/1000));
-M.f_P_non_HA = mean(M.spikes_P(M.N_non_HA)/(0.5*M.d_period/1000));
-M.f_Off_HA = mean(M.spikes_Off(M.N_HA)/(0.5*M.d_period/1000));
-M.f_Off_non_HA = mean(M.spikes_Off(M.N_non_HA)/(0.5*M.d_period/1000));
+M.f_Sp_HA = mean(M.spikes_Sp(intersect(M.N_HA, i_Sp))/(0.5*M.d_period/1000));
+M.f_Sp_non_HA = mean(M.spikes_Sp(intersect(M.N_non_HA, i_Sp))/(0.5*M.d_period/1000));
+M.f_P_HA = mean(M.spikes_P(intersect(M.N_HA, i_P))/(0.5*M.d_period/1000));
+M.f_P_non_HA = mean(M.spikes_P(intersect(M.N_non_HA, i_P))/(0.5*M.d_period/1000));
+M.f_Off_HA = mean(M.spikes_Off(intersect(M.N_HA, i_Off))/(0.5*M.d_period/1000));
+M.f_Off_non_HA = mean(M.spikes_Off(intersect(M.N_non_HA, i_Off))/(0.5*M.d_period/1000));
