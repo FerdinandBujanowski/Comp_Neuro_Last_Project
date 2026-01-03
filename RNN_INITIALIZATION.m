@@ -91,5 +91,4 @@ function M = RNN_INITIALIZATION(M)
     M.g_Ampa = M.g_Rec; % maximal conductance (mS.cm-2)
     M.g_Nmda = M.g_Rec*M.rho_slow*M.fact_Ampa/M.fact_Nmda; % maximal conductance (mS.cm-2)    
     M.g_GabaA = M.g_Rec*M.rho_EI*M.p_E/M.p_I*M.fact_Ampa/M.fact_GabaA; % maximal conductance (mS.cm-2)   
-    M.g_GabaB = M.g_Rec*M.rho_EI*M.rho_slow*M.p_E/M.p_I*M.fact_Ampa/M.fact_GabaB; % maximal conductance (mS.cm-2)   
-   
+    M.g_GabaB = M.g_Rec*M.rho_EI*M.rho_slow*M.p_E/M.p_I*M.fact_Ampa/M.fact_GabaB; % maximal conductance (mS.cm-2)  

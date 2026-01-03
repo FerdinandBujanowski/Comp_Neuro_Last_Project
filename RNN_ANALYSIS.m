@@ -127,3 +127,6 @@ M.f_P_HA = mean(M.spikes_P(intersect(M.N_HA, i_P))/(0.5*M.d_period/1000));
 M.f_P_non_HA = mean(M.spikes_P(intersect(M.N_non_HA, i_P))/(0.5*M.d_period/1000));
 M.f_Off_HA = mean(M.spikes_Off(intersect(M.N_HA, i_Off))/(0.5*M.d_period/1000));
 M.f_Off_non_HA = mean(M.spikes_Off(intersect(M.N_non_HA, i_Off))/(0.5*M.d_period/1000));
+
+M.silent_Sp = 1 - (length(intersect(M.N_HA, i_Sp))/M.n_HA);
+M.silent_P = 1 - (length(intersect(M.N_HA, i_P))/M.n_HA);

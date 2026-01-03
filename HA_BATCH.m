@@ -4,12 +4,12 @@ warning("off")
 
 % init arrays
 n_values = 10; 
-n_HA_min = 2; n_HA_max = 400;
-n_HA_values = linspace(n_HA_min, n_HA_max, n_values);
-disp(n_HA_values) % 2.0000   46.2222   90.4444  134.6667  178.8889  223.1111  267.3333  311.5556  355.7778  400.0000
+n_HA_min = 2; n_HA_max = 56;
+n_HA_values = round(linspace(n_HA_min, n_HA_max, n_values));
+disp(n_HA_values) 
 w_HA_min = 0; w_HA_max = 5;
 w_HA_values = linspace(w_HA_min, w_HA_max, n_values); 
-disp(w_HA_values) % 0    0.5556    1.1111    1.6667    2.2222    2.7778    3.3333    3.8889    4.4444    5.0000
+disp(w_HA_values)
 
 parfor k1 = 1:n_values
     for k2 = 1:n_values
@@ -18,13 +18,10 @@ parfor k1 = 1:n_values
         disp(n_HA + ", " + w_HA)
 
         M = [];
-        M = RNN_PARAMETERS(M, n_HA, w_HA, );
+        M = RNN_PARAMETERS(M, n_HA, w_HA, 1, 1, 0.6158);
         M = RNN_INITIALIZATION(M);
         M = RNN_SIMULATION(M);
         M = RNN_ANALYSIS(M);
-        % M = RNN_GRAPHIC_PARAMETERS(M);
-        % M = RNN_GRAPHICS(M);
-        % M = RNN_DISPLAY(M);
 
         % Save scalar observables into MapStruct object
         MapStruct{k1}{k2}.f_Sp_HA = M.f_Sp_HA;
@@ -33,6 +30,9 @@ parfor k1 = 1:n_values
         MapStruct{k1}{k2}.f_P_non_HA = M.f_P_non_HA;
         MapStruct{k1}{k2}.f_Off_HA = M.f_Off_HA;
         MapStruct{k1}{k2}.f_Off_non_HA = M.f_Off_non_HA;
+
+        MapStruct{k1}{k2}.silent_Sp = M.silent_Sp;
+        MapStruct{k1}{k2}.silent_P = M.silent_P;
 
     end
 end
@@ -46,6 +46,8 @@ for k1 = 1:n_values
         MapArr.f_P_non_HA(k1, k2) = fillmissing(MapStruct{k1}{k2}.f_P_non_HA, "constant", 0);
         MapArr.f_Off_HA(k1, k2) = fillmissing(MapStruct{k1}{k2}.f_Off_HA, "constant", 0);
         MapArr.f_Off_non_HA(k1, k2) = fillmissing(MapStruct{k1}{k2}.f_Off_non_HA, "constant", 0);
+        MapArr.silent_Sp(k1, k2) = MapStruct{k1}{k2}.silent_Sp;
+        MapArr.silent_P(k1, k2) = MapStruct{k1}{k2}.silent_P;
 
         % frequency comparisons
         MapArr.f_Sp_diff(k1, k2) = MapArr.f_Sp_HA(k1, k2) - MapArr.f_Sp_non_HA(k1, k2);
@@ -145,3 +147,6 @@ figure(Fig_No); clf; hold on; box on;
 title('|f_{P} - f_{Off}| >= 5Hz'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
 imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Off_distinct); shading flat; colorbar
 writematrix(MapArr.f_Off_distinct, "data/f_Off_distinct.dat")
+
+writematrix(MapArr.silent_Sp, "data/silent_Sp.dat")
+writematrix(MapArr.silent_P, "data/silent_P.dat")

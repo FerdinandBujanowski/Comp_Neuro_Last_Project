@@ -43,7 +43,13 @@ function M = RNN_SIMULATION(M)
 
         % Synaptic totals (updated to include Nmda & GabaB) -------
         M.I_Syn(:,kt) = M.I_Ampa(:,kt) + M.I_Nmda(:,kt) + M.I_GabaA(:,kt) + M.I_GabaB(:,kt);
-        M.I_Total(:,kt) = M.I_L(:,kt) + M.I_Ampa(:,kt) + M.I_Nmda(:,kt) + M.I_GabaA(:,kt) + M.I_GabaB(:,kt) - M.I_FF;
+        M.I_Total(:,kt) = M.I_L(:,kt) + M.I_Ampa(:,kt) + M.I_Nmda(:,kt) + M.I_GabaA(:,kt) + M.I_GabaB(:,kt);
+        
+        % Give regular tonic input current to all or only non-HA neurons
+        M.I_Total(M.N_non_HA, kt) = M.I_Total(M.N_non_HA, kt) - M.I_FF(M.N_non_HA);
+        if M.HA_regular_tonic
+            M.I_Total(M.N_HA, kt) = M.I_Total(M.N_HA, kt) - M.I_FF(M.N_HA);
+        end
 
         % Add tonic FF current to HA neurons depending on simulation time
         M.I_Total(M.N_HA, kt) = M.I_Total(M.N_HA, kt) - M.I_On_T(kt) - M.I_Off_T(kt);

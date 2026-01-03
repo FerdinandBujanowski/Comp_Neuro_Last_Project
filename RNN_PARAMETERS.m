@@ -1,9 +1,9 @@
-function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler, symmetric_HA_weights)
+function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler, symmetric_HA_weights, HA_regular_tonic, rho_slow)
 
 % Time -------
 M.d_On = 50; % duration of ON stimulation (ms)
 M.d_Off = 50; % duration of OFF stimulation (ms)
-M.d_period = 200; % (ms)
+M.d_period = 300; % (ms)
 
 M.t_max = 3 * M.d_period + M.d_On + M.d_Off; % max simulation time (ms)
 M.dt = 0.25; % time step (ms)
@@ -43,8 +43,8 @@ M.g_Rec = 1000/M.n; % mScm-2
 M.w_II_Scaling = 1;
 M.w_IE_Scaling = 1;
 
-M.rho_EI = 1; % EI balance scaling factor
-M.rho_slow = 1; % EI balance scaling factor
+M.rho_EI = 5; % EI balance scaling factor
+M.rho_slow = rho_slow; % EI balance scaling factor
 
 % Excitability -------
 M.C = 1; % membrane capacitance (µS.cm-2)
@@ -58,7 +58,7 @@ M.V_0_mean = M.V_M;
 M.V_0_std = 0;
 
 % External input -------
-M.I_FF_mean = 1.05; % µAcm-2
+M.I_FF_mean = 1.667; % µAcm-2
 M.I_FF_std = 0; % µAcm-2
 M.I_On = 2 * M.I_FF_mean; % µAcm-2
 M.I_Off = -2 * M.I_FF_mean; % µAcm-2
@@ -90,3 +90,4 @@ M.n_HA = param_n_HA;
 M.w_HA = param_w_HA_scaler * M.w_mean;
 M.N_HA = 1:M.n_HA;
 M.N_non_HA = M.n_HA+1:M.n;
+M.HA_regular_tonic = HA_regular_tonic;
