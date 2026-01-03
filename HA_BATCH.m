@@ -3,7 +3,7 @@ tic
 warning("off")
 
 % init arrays
-n_values = 10; 
+n_values = 3; 
 n_HA_min = 2; n_HA_max = 56;
 n_HA_values = round(linspace(n_HA_min, n_HA_max, n_values));
 disp(n_HA_values) 
@@ -50,13 +50,9 @@ for k1 = 1:n_values
         MapArr.silent_P(k1, k2) = MapStruct{k1}{k2}.silent_P;
 
         % frequency comparisons
-        MapArr.f_Sp_diff(k1, k2) = MapArr.f_Sp_HA(k1, k2) - MapArr.f_Sp_non_HA(k1, k2);
-        MapArr.f_Sp_P_diff(k1, k2) = MapArr.f_P_HA(k1, k2) - MapArr.f_Sp_HA(k1, k2);
-        MapArr.f_Off_diff(k1, k2) = MapArr.f_P_HA(k1, k2) - MapArr.f_Off_HA(k1, k2);
-
-        MapArr.f_Sp_distinct(k1, k2) = abs(MapArr.f_Sp_diff(k1, k2)) <= 5;
-        MapArr.f_P_distinct(k1, k2) = abs(MapArr.f_Sp_P_diff(k1, k2)) >= 5;
-        MapArr.f_Off_distinct(k1, k2) = abs(MapArr.f_Off_diff(k1, k2)) >= 5;
+        MapArr.f_Sp_distinct(k1, k2) = MapArr.f_Sp_HA(k1, k2) < (MapArr.f_Sp_non_HA(k1, k2) + 2.5);
+        MapArr.f_P_distinct(k1, k2) = MapArr.f_P_HA(k1, k2) > (MapArr.f_Sp_HA(k1, k2) + 5);
+        MapArr.f_Off_distinct(k1, k2) = MapArr.f_P_HA(k1, k2) > (MapArr.f_Off_HA(k1, k2) + 5);
     end
 end
 
@@ -106,45 +102,24 @@ writematrix(MapArr.f_Off_non_HA, "data/f_Off_non_HA.dat")
 % title('non HA Off frequency'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
 % imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Off_non_HA); shading flat; colorbar
 
-% f_Sp_HA - f_Sp_non_HA
+% f_Sp_HA < (f_Sp_non_HA + 2.5)
 Fig_No = Fig_No + 1;
 figure(Fig_No); clf; hold on; box on;
-title('f_{Sp} - f_{Sp,nonHA}'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
-imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Sp_diff); shading flat; colorbar
-writematrix(MapArr.f_Sp_diff, "data/f_Sp_diff.dat")
-
-% |f_Sp_HA - f_Sp_non_HA| <= 5
-Fig_No = Fig_No + 1;
-figure(Fig_No); clf; hold on; box on;
-title('|f_{Sp} - f_{Sp,nonHA}| <= 5Hz'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
+title('f_{Sp} < (f_{Sp,nonHA} + 2.5Hz)'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
 imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Sp_distinct); shading flat; colorbar
 writematrix(MapArr.f_Sp_distinct, "data/f_Sp_distinct.dat")
 
-% f_P_HA - f_Sp_HA
+% f_P_HA > (f_Sp_HA + 5Hz)
 Fig_No = Fig_No + 1;
 figure(Fig_No); clf; hold on; box on;
-title('f_{P} - f_{Sp}'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
-imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Sp_P_diff); shading flat; colorbar
-writematrix(MapArr.f_Sp_P_diff, "data/f_Sp_P_diff.dat")
-
-% |f_P_HA - f_Sp_HA| >= 5
-Fig_No = Fig_No + 1;
-figure(Fig_No); clf; hold on; box on;
-title('|f_{P} - f_{Sp}| >= 5Hz'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
+title('f_{P} > (f_{Sp} + 5Hz)'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
 imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_P_distinct); shading flat; colorbar
 writematrix(MapArr.f_P_distinct, "data/f_P_distinct.dat")
 
-% f_P_HA - f_Off_HA
+% f_P_HA > (f_Off + 5Hz)
 Fig_No = Fig_No + 1;
 figure(Fig_No); clf; hold on; box on;
-title('f_{P} - f_{Off}'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
-imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Off_diff); shading flat; colorbar
-writematrix(MapArr.f_Off_diff, "data/f_Off_diff.dat")
-
-% |f_P_HA - f_Off_HA| >= 5
-Fig_No = Fig_No + 1;
-figure(Fig_No); clf; hold on; box on;
-title('|f_{P} - f_{Off}| >= 5Hz'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
+title('f_{P} > (f_{Off} + 5Hz)'); ylabel('n_{HA}'); xlabel('w_{HA} (u.a.)');
 imagesc([w_HA_min w_HA_max], [n_HA_min n_HA_max], MapArr.f_Off_distinct); shading flat; colorbar
 writematrix(MapArr.f_Off_distinct, "data/f_Off_distinct.dat")
 
