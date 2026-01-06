@@ -3,8 +3,8 @@ tic
 warning("off")
 
 % init arrays
-n_values = 3; 
-n_HA_min = 2; n_HA_max = 56;
+n_values = 10; 
+n_HA_min = 2; n_HA_max = 100;
 n_HA_values = round(linspace(n_HA_min, n_HA_max, n_values));
 disp(n_HA_values) 
 w_HA_min = 0; w_HA_max = 5;
@@ -18,7 +18,7 @@ parfor k1 = 1:n_values
         disp(n_HA + ", " + w_HA)
 
         M = [];
-        M = RNN_PARAMETERS(M, n_HA, w_HA, 1, 1, 0.6158);
+        M = RNN_PARAMETERS(M, n_HA, w_HA, 0, 0.6158);
         M = RNN_INITIALIZATION(M);
         M = RNN_SIMULATION(M);
         M = RNN_ANALYSIS(M);

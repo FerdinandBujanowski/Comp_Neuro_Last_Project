@@ -65,7 +65,7 @@ function M = RNN_INITIALIZATION(M)
     M.W(M.N_I,M.N_E) = M.w_IE_Scaling*M.W(M.N_I,M.N_E);
 
     % initialize HA weights
-    M.W(M.N_HA, M.N_HA) = M.W(M.N_HA, M.N_HA) + A(M.N_HA, M.N_HA) * (M.w_HA - M.w_mean);
+    M.W(M.N_HA, M.N_HA) = M.W(M.N_HA, M.N_HA) * M.param_w_HA_scaler;
 
     % make HA weights symmetric
     if M.symmetric_HA_weights

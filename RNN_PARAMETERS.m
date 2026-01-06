@@ -1,4 +1,4 @@
-function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler, symmetric_HA_weights, HA_regular_tonic, rho_slow)
+function M = RNN_PARAMETERS(M, param_n_HA, param_w_HA_scaler, symmetric_HA_weights, rho_slow)
 
 % Time -------
 M.d_On = 50; % duration of ON stimulation (ms)
@@ -6,7 +6,6 @@ M.d_Off = 50; % duration of OFF stimulation (ms)
 M.d_period = 300; % (ms)
 
 M.t_max = 3 * M.d_period + M.d_On + M.d_Off; % max simulation time (ms)
-M.dt = 0.25; % time step (ms)
 M.dt = 0.5; % time step (ms)
 M.T = (0:M.dt:M.t_max-M.dt); % time array (ms)
 M.n_t = length(M.T); % # of time steps
@@ -87,7 +86,7 @@ M.V_GabaB = -90; % reversal potential (mV)
 
 % Hebbian Assembly --------------
 M.n_HA = param_n_HA;
-M.w_HA = param_w_HA_scaler * M.w_mean;
+M.param_w_HA_scaler = param_w_HA_scaler;
+% M.w_HA = param_w_HA_scaler * M.w_mean;
 M.N_HA = 1:M.n_HA;
 M.N_non_HA = M.n_HA+1:M.n;
-M.HA_regular_tonic = HA_regular_tonic;

@@ -1,7 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-FOLDER = "grid_search_two/"
+n_search = 3
+FOLDER = f"grid_search_{n_search}/"
+"""
+- GRID SEARCH 1: bistable candidate: n_HA=90, w_HA=2.2222
+    -> n_HA between 2 and 500 (10 values)
+    -> w_HA between 0 and 5 (10 values)
+    -> symmetric HA weights ON
+    -> rho_slow = 0.6158
+    -> rho_EI = 5
+- GRID SEARCH 2: bistable candidate: n_HA=35, w_HA=2.7778
+    -> n_HA between 2 and 100 (10 values)
+    -> w_HA between 0 and 5 (10 values)
+    -> symmetric HA weights ON
+    -> rho_slow = 0.6158
+    -> rho_EI = 5
+- GRID SEARCH 3: n_HA=35, w_HA=2.2222
+    -> n_HA between 2 and 100 (10 values)
+    -> w_HA between 0 and 5 (10 values)
+    -> symmetric HA weights OFF
+    -> rho_slow = 0.6158
+    -> rho_EI = 5
+"""
 
 n_line = None
 w_line = None
@@ -26,10 +47,6 @@ f_P_distinct = f_P_HA > (f_Sp_HA + 5)
 f_Off_distinct = f_P_HA > (f_Off_HA + 5)
 silent_regime = f_Sp_HA == 0
 saturated_regime = f_Sp_HA > 100
-
-# additional maps
-f_Sp_sim = f_Sp_HA/f_Sp_nonHA
-f_P_sim = f_Sp_HA/f_P_HA
 
 combined_matrix = np.full(shape=(10, 10, 3), fill_value=[0.5, 0.5, 0.5])
 for i in range(10):
@@ -61,12 +78,10 @@ def draw_map(data, ax, title=None, colorbar=False):
         ax.set_title(title)
 
 
-fig, axes = plt.subplots(2, 3)
-draw_map(f_Sp_distinct, ax=axes[0, 0], title='f_Sp,HA < (f_Sp,nonHA - 2.5Hz)', colorbar=True)
-# draw_map(np.logical_and(f_Sp_sim > 0.5, f_Sp_sim < 1.5), '0.5 < f_Sp,HA/f_Sp,nonHA < 1.5')
+fig, axes = plt.subplots(2, 3, figsize=(10, 5))
+draw_map(f_Sp_distinct, ax=axes[0, 0], title='f_Sp,HA < (f_Sp,nonHA + 2.5Hz)', colorbar=True)
 draw_map(f_P_distinct, ax=axes[0, 1], title='f_P > (f_Sp,HA + 5Hz)', colorbar=True)
-draw_map(f_Off_distinct, ax=axes[0, 2], title='f_P > (f_Sp,HA,Off + 5Hz)', colorbar=True)
-# draw_map(f_P_sim, 'f_Sp,HA/f_P')
+draw_map(f_Off_distinct, ax=axes[0, 2], title='f_P > (f_Off,HA + 5 Hz)', colorbar=True)
 draw_map(f_Sp_HA, ax=axes[1, 0], title='f_Sp,HA', colorbar=True)
 draw_map(f_P_HA, ax=axes[1, 2], title='f_P', colorbar=True)
 
@@ -75,3 +90,8 @@ draw_map(combined_matrix, ax=axes[1, 1], title='Regime Map')
 fig.tight_layout()
 plt.subplots_adjust(wspace=0.3)
 plt.show()
+
+fig, axes = plt.subplots(1, 1)
+
+# draw_map(f_P_HA-f_Sp_HA, ax=axes, title='f_P-f_Sp,HA', colorbar=True)
+# plt.show()
