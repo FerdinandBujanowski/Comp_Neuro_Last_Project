@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-n_search = 3
+n_search = 2
 FOLDER = f"grid_search_{n_search}/"
 """
 - GRID SEARCH 1: bistable candidate: n_HA=90, w_HA=2.2222
